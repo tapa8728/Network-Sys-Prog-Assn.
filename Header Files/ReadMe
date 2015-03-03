@@ -1,0 +1,24 @@
+Readme File
+
+Programming Assignment No-3
+Group Assignment By - 
+1)Megha Sree Yadla
+2)Tanvi Parikh
+
+The zip file(PA3-MeghaTanvi) contains 3 subfolders-
+1)Threadpool - Threadpool.h, driver1.cc, output screenshot
+2)Eventscheduler - EventScheduler.h, driver2.cc, output screenshot
+3)MessageLibrary - Message.h, driver3.cc, output screenshot
+
+The following commands can be used to run these libraries:
+
+g++ -o obj1 driver1.cc -lpthread
+g++ -o obj2 driver2.cc -lpthread
+g++ -o obj3 driver3.cc
+
+This assignment has been a combined effort by both of us and we have equally devoted time and energy to figuring out solutions and developing programs. We are both 100% responsible for the output of the code and have put in the best of our skills and efforts.
+
+All 3 header files run successfully against the driver programs and deliver satisfactory output(to the best of our knowledge).
+
+(This readme file was written in presence of both Tanvi and Megha Sree)
+
