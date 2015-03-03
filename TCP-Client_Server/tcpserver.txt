@@ -1,0 +1,111 @@
+//chat coordinator TCP code
+	
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <sys/errno.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>	
+	
+#define port_tcp 1234
+
+int main(int argc, char *argv[])
+{
+	struct sockaddr_in mysin; 					/* an Internet endpoint address  */
+	struct sockaddr_in clientsin;				/* the from address of the client   */
+	char send_message[80]; 						/*Message to be subbmitted*/
+	char *host = "127.0.0.1";
+	char buf[100];							/* receive buffer */
+	int tcp_server;             				/* socket descriptor  */
+	int alen;									/* size of address stucture*/
+	int rmsg; 									/* to recieve messages for accept*/
+	int user_session_choice;					//switch case for session
+
+	/***********************************************************************************************************/
+	//calling the session server with fork() and execv()
+	/***********************************************************************************************************/
+	//pid_t i = fork();
+	//pid_t ss_pid;
+	//if(i==0)
+	//{
+		printf("\n Sucessful forking of child process");
+		//ss_pid = getpid();
+		//printf("\n Session Server's PID  is : %d", ss_pid);
+		//using execv() to call the session server program
+		printf("\nTrying to call execv");
+		//execv("./session_server", (char *[]){ "./session_server", NULL });
+		
+		/* For both Start and Join we will launch the Session_Server..*/
+		//***********************************************************************************************************
+		//step 1 : Define TCP socket on serverside
+		tcp_server = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+		printf("\n TCP server socket value is : %d", tcp_server);
+		if(tcp_server<0)
+		{
+			printf("\nServer TCP socket cannot be created  ");
+			return 0;
+		}
+		memset((char *)&mysin, 0, sizeof(mysin));
+		mysin.sin_family = AF_INET;	
+		mysin.sin_addr.s_addr = htonl(INADDR_ANY);
+		mysin.sin_port = htons(port_tcp);
+		//mysin.sin_port = htons(0);		//any available port will be picked up
+										//there may be multiple session servers
+		
+		//***********************************************************************************************************
+		//step 2 : Bind the TCP socket
+		if(bind(tcp_server, (struct sockaddr *)&mysin, sizeof(mysin)) < 0)
+			printf("\nTcp server socket could not be bound");
+		else
+			printf("\nThe server socket was successfully bound !"); 
+		//execv("./session_server", (char *[]){ "./session_server", NULL });
+		
+		/***********************************************************************************************************/
+		//step 3: listen for incoming requests
+		if((listen(tcp_server, 5))<0)
+			printf("\nStupid socket could not listen");
+		else	
+			printf("\nSocket heard very well !! ");
+			
+		
+		//step4: accept an incoming connection
+		alen = sizeof(clientsin);
+		printf("\nalen=%d", alen);
+		printf("\n Session Server is ready and waiting !!");
+		
+		while(1)
+		{
+			/***********************************************************************************************************/
+			//step5 : Accept a connection
+			rmsg = accept(tcp_server, (struct sockaddr *)&clientsin, &alen);
+			printf("\n Accept : %d", rmsg);
+			printf("\nDoes it even come here");
+			if(rmsg<0)
+				printf("\nCannot acccept !!");
+			else
+				printf("\nSuccesfully accepted ! ");
+			
+			/***********************************************************************************************************/
+			//step6 : Recieve a message - User's Choice !!
+			if((recv(tcp_server, buf, strlen(buf), 0))<0)
+				printf("\n Meessage - %s - was not recieved", buf);
+			else
+			{
+				user_session_choice = atoi(buf);
+				printf("\n user_session_choice :%d", user_session_choice);
+			}
+		}//end of infiinite while
+	//}
+	//else
+	//{
+	//	printf("\nThe child process could not be forked !");
+	//	break;
+	//}
+}//end of main
